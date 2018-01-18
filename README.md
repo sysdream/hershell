@@ -164,3 +164,7 @@ desktop-jcfs2ok\lab1
 
 C:\Users\lab1\Downloads>
 ```
+
+## Credits
+
+Ronan Kervella `<r.kervella -at- sysdream -dot- com>`
