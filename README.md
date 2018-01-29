@@ -178,3 +178,7 @@ Active sessions
 meterpreter > getuid
 Server username: DESKTOP-3PVV31A\lab
 ```
+
+## Credits
+
+Ronan Kervella `<r.kervella -at- sysdream -dot- com>`
