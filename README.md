@@ -53,7 +53,7 @@ The following special commands are supported:
 
 * ``run_shell`` : drops you an system shell (allowing you, for example, to change directories)
 * ``inject <base64 shellcode>`` : injects a shellcode (base64 encoded) in the same process memory, and executes it (Windows only at the moment).
-* ``meterpreter [tcp|http|https] IP:PORT`` : connects to a multi/handler to get a stage2 reverse tcp meterpreter from metasploit, and execute the shellcode in memory (Windows only at the moment)
+* ``meterpreter [tcp|http|https] IP:PORT`` : connects to a multi/handler to get a stage2 reverse tcp, http or https meterpreter from metasploit, and execute the shellcode in memory (Windows only at the moment)
 * ``exit`` : exit gracefully
 
 ## Usage
