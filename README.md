@@ -73,18 +73,18 @@ cat server.key >> server.pem
 For windows:
 
 ```bash
-# Custom target
-$ make GOOS=windows GOARCH=amd64 LHOST=192.168.0.12 LPORT=1234
-# Predifined target
+# Predifined 32 bit target
 $ make windows32 LHOST=192.168.0.12 LPORT=1234
+# Predifined 64 bit target
+$ make windows64 LHOST=192.168.0.12 LPORT=1234
 ```
 
 For Linux:
 ```bash
-# Custom target
-$ make GOOS=linux GOARCH=amd64 LHOST=192.168.0.12 LPORT=1234
-# Predifined target
+# Predifined 32 bit target
 $ make linux32 LHOST=192.168.0.12 LPORT=1234
+# Predifined 64 bit target
+$ make linux64 LHOST=192.168.0.12 LPORT=1234
 ```
 
 For Mac OS X
