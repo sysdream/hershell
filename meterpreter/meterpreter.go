@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/lesnuages/hershell/shell"
+	"github.com/sysdream/hershell/shell"
 )
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
