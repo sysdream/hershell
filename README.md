@@ -21,7 +21,7 @@ The goal of this project is to get a simple reverse shell, which can work on mul
 
 Since it's written in Go, you can cross compile the source for the desired architecture.
 
-## Getting started & dependancies
+## Getting started & dependencies
 
 As this is a Go project, you will need to follow the [official documentation](https://golang.org/doc/install) to set up
 your Golang environment (with the `$GOPATH` environment variable).
