@@ -47,7 +47,8 @@ However, some helper targets are available in the ``Makefile``:
 - ``windows64`` : builds a windows 64 bits executable (PE 64 bits)
 - ``linux32`` : builds a linux 32 bits executable (ELF 32 bits)
 - ``linux64`` : builds a linux 64 bits executable (ELF 64 bits)
-- ``macos`` : builds a mac os 64 bits executable (Mach-O)
+- ``macos32`` : builds a mac os 32 bits executable (Mach-O)
+- ``macos64`` : builds a mac os 64 bits executable (Mach-O)
 
 For those targets, you just need to set the ``LHOST`` and ``LPORT`` environment variables.
 
