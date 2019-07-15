@@ -1,8 +1,8 @@
 # Hershell
 
-**Note:** the project has been forked on [this repo](https://github.com/lesnuages/hershell), check there for any other developments.
+**NOTE:** the project has been forked on [this repo](https://github.com/lesnuages/hershell), check there for any other developments.
 
-Simple TCP reverse shell written in [Go](https://golang.org).
+Hershell is a simple TCP reverse shell written in [Go](https://golang.org).
 
 It uses TLS to secure the communications, and provide a certificate public key fingerprint pinning feature, preventing from traffic interception.
 
