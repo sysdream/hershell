@@ -1,6 +1,6 @@
 # Hershell
 
-## /!\ This repository is no longer maintained - For updates on Hershell, please check [this repo](https://github.com/lesnuages/hershell) /!\
+**Note:** the project has been forked on [this repo](https://github.com/lesnuages/hershell), check there for any other developments.
 
 Simple TCP reverse shell written in [Go](https://golang.org).
 
